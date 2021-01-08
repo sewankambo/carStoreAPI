@@ -19,6 +19,7 @@ apache-activemq-*
 *.iws
 *.iml
 *.ipr
+/util/
 
 ### NetBeans ###
 /nbproject/private/

@@ -13,7 +13,7 @@
     <artifactId>vehicles-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>vehicles-api</name>
-    <description>A Restful API for vehicles</description>
+    <description>A Restful API for a vehicle store</description>
 
     <properties>
         <java.version>11</java.version>

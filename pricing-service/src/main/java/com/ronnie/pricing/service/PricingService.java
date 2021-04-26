@@ -5,6 +5,7 @@ import com.ronnie.pricing.domain.price.Price;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -18,7 +19,7 @@ public class PricingService {
      * Holds {ID: Price} pairings (current implementation allows for 20 vehicles)
      */
     private static final Map<Long, Price> PRICES = LongStream
-            .range(1, 20)
+            .range(1, 21)
             .mapToObj(i -> new Price("USD", randomPrice(), i))
             .collect(Collectors.toMap(Price::getVehicleId, p -> p));
 
@@ -42,6 +43,7 @@ public class PricingService {
      * @return random price for a vehicle
      */
     private static BigDecimal randomPrice() {
+        Random random = new Random();
         return new BigDecimal(ThreadLocalRandom.current().nextDouble(1, 5))
                 .multiply(new BigDecimal(5000d)).setScale(2, RoundingMode.HALF_UP);
     }

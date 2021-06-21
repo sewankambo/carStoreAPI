@@ -94,7 +94,7 @@ public class CarControllerTest {
          *   below (the vehicle will be the first in the list).
          */
         Car car = getCar();
-        mvc.perform(get("/cars")
+        mvc.perform(get(new URI("/cars"))
                 .content(json.write(car).getJson())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8))
@@ -112,13 +112,34 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
-        Car car = getCar();
-        mvc.perform(get("/cars/1")
-                .content(json.write(car).getJson())
+        mvc.perform(get(new URI("/cars/1"))
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.details.manufacturer.name").value("Chevrolet"))
+                .andExpect(jsonPath("$.condition").value(Condition.USED.name()))
+                .andExpect(jsonPath("$.details.mileage").value(32280))
+                .andExpect(jsonPath("$.location.lon").value(-73.935242));
+        verify(carService, times(1)).findById(1L);
+    }
+    
+    /**
+     * Tests the update operation for a single car by ID.
+     * @throws Exception if the update fails.
+     */
+    @Test
+    public void updateCar() throws Exception {
+        Car newCar = changeCar();
+        mvc.perform(put(new URI("/cars/1"))
+                .content(json.write(newCar).getJson())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
-        verify(carService, times(1)).findById(1L);
+                .andExpect(status().isOk())
+                .andDo(mvcResult -> mvc.perform(get(new URI("/cars/1"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.details.manufacturer.name").value("Ford"))
+                .andExpect(jsonPath("$.condition").value(Condition.NEW.name()))
+                .andExpect(jsonPath("$.details.mileage").value(00007))
+                .andExpect(jsonPath("$.location.lon").value(22.000544));
     }
 
     /**
@@ -133,9 +154,7 @@ public class CarControllerTest {
          *   should utilize the car from `getCar()` below.
          */
         Car car = getCar();
-        mvc.perform(delete("/cars/1")
-                .content(json.write(car).getJson())
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+        mvc.perform(delete(new URI("/cars/1"))
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isNoContent());
         verify(carService, times(1)).delete(1L);
@@ -162,6 +181,29 @@ public class CarControllerTest {
         details.setNumberOfDoors(4);
         car.setDetails(details);
         car.setCondition(Condition.USED);
+        return car;
+    }
+    /**
+     * Creates a second example Car object for use in updating.
+     * @return an example Car object
+     */
+    private Car changeCar() {
+        Car car = new Car();
+        car.setLocation(new Location(-10.938475, 22.000544));
+        Details details = new Details();
+        Manufacturer manufacturer = new Manufacturer(107, "Ford");
+        details.setManufacturer(manufacturer);
+        details.setModel("Focus");
+        details.setMileage(00007);
+        details.setExternalColor("red");
+        details.setBody("crossover");
+        details.setEngine("5.0L V8");
+        details.setFuelType("Gasoline");
+        details.setModelYear(2018);
+        details.setProductionYear(2018);
+        details.setNumberOfDoors(2);
+        car.setDetails(details);
+        car.setCondition(Condition.NEW);
         return car;
     }
 }

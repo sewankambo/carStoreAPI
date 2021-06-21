@@ -3,6 +3,8 @@ package com.ronnie.vehicles.api;
 
 import com.ronnie.vehicles.domain.car.Car;
 import com.ronnie.vehicles.service.CarService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  * Implements a REST-based controller for the Vehicles API.
  */
 @RestController
+@ApiResponses(value = {
+        @ApiResponse(code = 400, message = "Bad request! Please follow API documentation."),
+        @ApiResponse(code = 401, message = "Unauthorized request"),
+        @ApiResponse(code = 500, message = "Server is down!")
+})
 @RequestMapping("/cars")
 class CarController {
 

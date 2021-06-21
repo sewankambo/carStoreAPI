@@ -1,6 +1,6 @@
 # Vehicles-Project
 
-Implementation of a Vehicles API using Java and Spring Boot that can communicate with separate location and pricing services.
+A backend Rest API that communicates with pricing and location microservices to maintain and update vehicle information on a website.
 
 ## Instructions
 
